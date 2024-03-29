@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "977041263200",
+    "project_id": "sabe-d5999",
+    "storage_bucket": "sabe-d5999.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:977041263200:android:12df04fe53eab825bc9105",
+        "android_client_info": {
+          "package_name": "com.sabe"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYuLrXRR0V1LfynoLWAlae2u-l9TieuKg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
