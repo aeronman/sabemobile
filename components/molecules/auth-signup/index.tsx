@@ -1,5 +1,13 @@
 import React, {useState} from 'react';
-import {Alert, TouchableOpacity} from 'react-native';
+import {
+  Alert,
+  Modal,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import CheckBox from '@react-native-community/checkbox';
 
 import {
   StyledCol,
@@ -40,7 +48,8 @@ function AuthSignUp({navigation}) {
   const [asUser, setAsUser] = useState(true);
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [modalVisible, setModalVisible] = useState(false); // State variable for modal visibility
+  const [termsAccepted, setTermsAccepted] = useState(false); // State variable for terms acceptance
   const handleStep = () => {
     setStep(step + 1);
   };
@@ -153,6 +162,11 @@ function AuthSignUp({navigation}) {
 
     setIsLoading(false);
   };
+  const handleAcceptTerms = () => {
+    if (!termsAccepted) {
+      setModalVisible(true); // Open the modal only if terms are not accepted
+    }
+  };
 
   const handleSignUpDriver = async () => {
     setIsLoading(true);
@@ -193,7 +207,7 @@ function AuthSignUp({navigation}) {
         carPlate: plate,
         rating: 0,
         totalRides: 0,
-        points:0,
+        points: 0,
         regIDUrl: downloadURL1,
         licenseIDUrl: downloadURL2,
         isVerified: false,
@@ -311,6 +325,49 @@ function AuthSignUp({navigation}) {
           </StyledCol>
         )}
       </StyledCol>
+      {/* Accept Terms and Conditions */}
+      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <CheckBox value={termsAccepted} onValueChange={setTermsAccepted} />
+        <TouchableOpacity onPress={handleAcceptTerms}>
+          <StyledText14 style={[sans.regular, {color: '#042F40'}]}>
+            I accept the Terms and Conditions
+          </StyledText14>
+        </TouchableOpacity>
+      </View>
+
+      {/* Modal for Terms and Conditions */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(false);
+        }}>
+        <ScrollView style={{flex: 1, backgroundColor: '#ffffff'}}>
+          <StyledCol style={{padding: 20}}>
+            <StyledText16
+              style={[sans.bold, {color: '#042F40', marginBottom: 10}]}>
+              Terms and Conditions
+            </StyledText16>
+            <Text>
+              {' '}
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla
+              convallis libero eget diam interdum, sit amet dapibus magna
+              lobortis. In hac habitasse platea dictumst. Mauris ut nisl sem.
+              Integer id massa non lectus volutpat finibus. Sed consequat magna
+              eu enim venenatis, vitae fringilla odio lobortis. Nulla ultricies,
+              justo nec maximus fermentum, ipsum arcu tristique libero, non
+              efficitur odio purus in lorem. Fusce eleifend dui vel libero
+              consequat, id fringilla odio placerat. Integer non risus augue.
+            </Text>
+          </StyledCol>
+          <TouchableOpacity onPress={() => setModalVisible(false)}>
+            <StyledText16 style={[sans.bold, {color: '#042F40'}]}>
+              Back
+            </StyledText16>
+          </TouchableOpacity>
+        </ScrollView>
+      </Modal>
       <StyledCol style={{width: '100%'}}>
         {asUser ? (
           <>

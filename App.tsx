@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, {useEffect} from 'react';
 
 import MainStack from './components/organism/1-main_stack';

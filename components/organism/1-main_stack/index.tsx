@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, {useState} from 'react';
 
 import {useNetInfo} from '@react-native-community/netinfo';
@@ -18,6 +19,8 @@ import HomeStack from '../3-home_stack';
 import AdminStack from '../4-admin_stack';
 
 import firestore from '@react-native-firebase/firestore';
+import CustomerBuyPoints from '../../molecules/customer-points';
+import DriverWithdrawPoints from '../../molecules/driver-points';
 
 function MainStack() {
   const netInfo = useNetInfo();
@@ -171,6 +174,13 @@ function MainStack() {
               bookingUID={bookingUID}
             />
           )}
+        </Stack.Screen>
+        <Stack.Screen name="buy-points">
+          {props => <CustomerBuyPoints {...props} userID={userUID} />}
+        </Stack.Screen>
+
+        <Stack.Screen name="widthdraw-points">
+          {props => <DriverWithdrawPoints {...props} userID={userUID} />}
         </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>

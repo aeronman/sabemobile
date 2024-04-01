@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable prettier/prettier */
 import React, {useEffect, useState} from 'react';
 
 import {
@@ -26,6 +28,8 @@ import HomeProfileAlt from '../../../assets/icons/home-profile-alt.svg';
 import firestore from '@react-native-firebase/firestore';
 
 import notifee from '@notifee/react-native';
+import AdminTopup from '../../molecules/admin-topup';
+import AdminWithdraw from '../../molecules/admin-withdraw';
 
 function AdminStack({setIsLoggedIn, userUID, profile, refetchProfile}: any) {
   const Tabs = AnimatedTabBarNavigator();
@@ -195,6 +199,48 @@ function AdminStack({setIsLoggedIn, userUID, profile, refetchProfile}: any) {
         }}>
         {props => (
           <AdminCommuters
+            {...props}
+            commuters={commuters}
+            setCommuters={setCommuters}
+            fetchCommuters={fetchCommuters}
+          />
+        )}
+      </Tabs.Screen>
+
+      <Tabs.Screen
+        name={'AdminTopup'}
+        options={{
+          // @ts-ignore
+          tabBarIcon: ({focused}) =>
+            focused ? (
+              <AdminStudent width={20} height={20} />
+            ) : (
+              <AdminStudentAlt width={20} height={20} />
+            ),
+        }}>
+        {props => (
+          <AdminTopup
+            {...props}
+            commuters={commuters}
+            setCommuters={setCommuters}
+            fetchCommuters={fetchCommuters}
+          />
+        )}
+      </Tabs.Screen>
+
+      <Tabs.Screen
+        name={'AdminWithdraw'}
+        options={{
+          // @ts-ignore
+          tabBarIcon: ({focused}) =>
+            focused ? (
+              <AdminStudent width={20} height={20} />
+            ) : (
+              <AdminStudentAlt width={20} height={20} />
+            ),
+        }}>
+        {props => (
+          <AdminWithdraw
             {...props}
             commuters={commuters}
             setCommuters={setCommuters}

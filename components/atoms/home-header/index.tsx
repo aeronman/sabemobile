@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {Dimensions} from 'react-native';
 
@@ -38,6 +40,10 @@ function HomeHeader({
       navigation.navigate('Bookings');
     } else if (title === 'Ride Chat') {
       navigation.navigate('Home');
+    }
+    else if ('Buy Points')
+    {
+      navigation.navigate('Profile');
     }
   };
 

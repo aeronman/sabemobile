@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, {useState} from 'react';
 
 import {
@@ -57,8 +58,6 @@ function AuthSignin({navigation, setProfile, setUserUID, setIsLoggedIn}: any) {
   const handleSignIn = async () => {
     setIsLoading(true);
 
-    console.log(email);
-    console.log(password);
     await auth().currentUser?.reload();
     await auth()
       .signInWithEmailAndPassword(email, password)
