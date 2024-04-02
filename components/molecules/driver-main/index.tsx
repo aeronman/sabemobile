@@ -1,10 +1,11 @@
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable prettier/prettier */
 import React, {useEffect, useState} from 'react';
-import {Dimensions, ScrollView} from 'react-native';
+import {Dimensions, ScrollView, Text} from 'react-native';
 
 import {StyledSafeAreaView} from '../../../styles/container';
 
 import HomeHeader from '../../atoms/home-header';
-import MainMapDriver from '../../atoms/main-map-driver';
 import MainRideDriver from '../../atoms/main-ride-driver';
 
 import GetLocation from 'react-native-get-location';

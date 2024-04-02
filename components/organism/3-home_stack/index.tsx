@@ -1,3 +1,7 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState} from 'react';
 
 import {
@@ -46,7 +50,7 @@ function HomeStack({
   const Tabs = AnimatedTabBarNavigator();
 
   // Driver Hooks
-  const [create, setCreate] = useState(false);
+  const [create, setCreate] = useState<any>(false);
 
   const [hasListing, setHasListing] = useState(false);
   const [booking, setBooking] = useState([]);

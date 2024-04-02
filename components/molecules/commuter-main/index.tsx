@@ -1,3 +1,6 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useRef, useState} from 'react';
 import {Dimensions, ScrollView} from 'react-native';
 
@@ -46,8 +49,7 @@ function CommuterMain({
           });
         })
         .catch(error => {
-          const {code, message} = error;
-          // console.warn(code, message);
+          const {message} = error;
         });
     };
 
@@ -240,7 +242,7 @@ function CommuterMain({
       if (bookingsSnapshot.exists) {
         const data = bookingsSnapshot.data();
 
-        setPriceData(data.price);
+        setPriceData(data?.price);
       }
 
       if (docSnapshot.exists) {

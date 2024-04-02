@@ -1,3 +1,6 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState} from 'react';
 import {Dimensions, Image, RefreshControl, ScrollView} from 'react-native';
 
@@ -22,7 +25,7 @@ import Person from '../../../assets/icons/person.svg';
 // @ts-ignore
 import Rides from '../../../assets/icons/home-dark.svg';
 // @ts-ignore
-import Coin from '../../../assets/icons/coin.svg' ;
+import Coin from '../../../assets/icons/coin.svg';
 
 import {openComposer} from 'react-native-email-link';
 import {launchImageLibrary} from 'react-native-image-picker';
@@ -39,7 +42,6 @@ function UserProfile({
   disableLogout,
 }: any) {
   const sans = styledText();
-
   const [refreshing, setRefreshing] = React.useState(false);
 
   const onRefresh = React.useCallback(() => {
@@ -116,9 +118,13 @@ function UserProfile({
       }
     });
   };
+
   const buyPoints = () => {
-    
-   
+    navigation.navigate('buy-points');
+  };
+
+  const withdrawPoints = () => {
+    navigation.navigate('widthdraw-points');
   };
 
   return (
@@ -236,10 +242,14 @@ function UserProfile({
               </StyledRow>
             </StyledCol>
             <StyledCol style={{width: '100%', marginTop: 10}}>
-            <ButtonSettings
-                setting={'Buy Points'}
-                onClick={buyPoints}
-            />
+              {profile.type === 'driver' ? (
+                <ButtonSettings
+                  setting={'Withdraw Points'}
+                  onClick={withdrawPoints}
+                />
+              ) : (
+                <ButtonSettings setting={'Buy Points'} onClick={buyPoints} />
+              )}
               <ButtonSettings
                 setting={'Frequently Asked Questions'}
                 onClick={handleFaqModalOpen}
@@ -256,6 +266,7 @@ function UserProfile({
           </StyledCol>
         </ScrollView>
       </StyledSafeAreaView>
+
       <ModalInfo
         visible={faqModalVisible}
         setVisible={setFaqModalVisible}
