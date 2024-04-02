@@ -25,6 +25,11 @@ import HomeProfile from '../../../assets/icons/home-profile.svg';
 // @ts-ignore
 import HomeProfileAlt from '../../../assets/icons/home-profile-alt.svg';
 
+// @ts-ignore
+import PointsIcon from '../../../assets/icons/coin-points.svg';
+// @ts-ignore
+import WithdrawIcon from '../../../assets/icons/withdraw-icon.svg';
+
 import firestore from '@react-native-firebase/firestore';
 
 import notifee from '@notifee/react-native';
@@ -211,12 +216,7 @@ function AdminStack({setIsLoggedIn, userUID, profile, refetchProfile}: any) {
         name={'AdminTopup'}
         options={{
           // @ts-ignore
-          tabBarIcon: ({focused}) =>
-            focused ? (
-              <AdminStudent width={20} height={20} />
-            ) : (
-              <AdminStudentAlt width={20} height={20} />
-            ),
+          tabBarIcon: ({focused}) => <PointsIcon />,
         }}>
         {props => (
           <AdminTopup
@@ -232,12 +232,7 @@ function AdminStack({setIsLoggedIn, userUID, profile, refetchProfile}: any) {
         name={'AdminWithdraw'}
         options={{
           // @ts-ignore
-          tabBarIcon: ({focused}) =>
-            focused ? (
-              <AdminStudent width={20} height={20} />
-            ) : (
-              <AdminStudentAlt width={20} height={20} />
-            ),
+          tabBarIcon: ({focused}) => <WithdrawIcon />,
         }}>
         {props => (
           <AdminWithdraw

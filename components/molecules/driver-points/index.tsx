@@ -43,6 +43,11 @@ const DriverWithdrawPoints = ({navigation, userID}: any) => {
   }, []);
 
   const onSubmit = async () => {
+    if (Number(widthdrawAmmount) <= 0) {
+      Alert.alert('Point cannot be 0, Please provide accurate ammount');
+      return;
+    }
+
     setLoading(true);
     const {points: accountPoints} = currentDetails as any;
     if (widthdrawAmmount > accountPoints) {
