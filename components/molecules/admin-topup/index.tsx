@@ -2,7 +2,7 @@
 /* eslint-disable react/self-closing-comp */
 /* eslint-disable react-native/no-inline-styles */
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, Dimensions, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Dimensions, Image, Modal, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import Sabe from '../../../assets/icons/home-dark.svg';
 
@@ -12,6 +12,7 @@ function AdminTopup({ navigation }:any) {
   const [isLoading, setIsLoading] = useState(false);
   const [topupds, setTopupds] = useState([]);
   const [isRefetch, setIsRefetch] = useState(false);
+ 
 
   const fetchTopups = async () => {
     setIsLoading(true);
@@ -54,6 +55,7 @@ function AdminTopup({ navigation }:any) {
       console.error('Error handling topup:', error);
     }
   };
+  
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -108,7 +110,10 @@ const TopUpCard = ({ UID, docID,fileBlob, amount, referenceNumber, customer, sta
     handleTopupAction('rejected', docID,UID);
   };
 
-
+  const [modalVisible, setModalVisible] = useState(false);
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
+  };
   return (
     <View style={{
       width: Dimensions.get('screen').width - 32,
@@ -119,7 +124,24 @@ const TopUpCard = ({ UID, docID,fileBlob, amount, referenceNumber, customer, sta
       margin: 16,
       overflow: 'hidden',
     }}>
-      <Image source={{uri:fileBlob}} style={{ width: '100%', height: 150 }}/>
+     <TouchableOpacity onPress={toggleModal}>
+        <Image source={{ uri: fileBlob }} style={{ width: '100%', height: 150 }} />
+      </TouchableOpacity>
+
+      {/* Modal for larger image */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={toggleModal}
+      >
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <TouchableOpacity onPress={toggleModal} style={{ position: 'absolute', top: 20, right: 20, zIndex: 10 }}>
+            <Text style={{ color: 'white', fontSize: 20 }}>Close</Text>
+          </TouchableOpacity>
+          <Image source={{ uri: fileBlob }} style={{ width: '80%', height: '80%' }} />
+        </View>
+      </Modal>
       <View style={{ paddingHorizontal: 16, paddingTop: 16, paddingBottom: 24 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
           <Text style={{ fontSize: 48, color: 'black', fontWeight: 'bold' }}>{amount || 0}</Text>

@@ -51,17 +51,19 @@ function BookingsDetail({
 
   const sendRequest = async () => {
     try {
+    
+      console.log(driverUID);
+      console.log(userUID);
+      
       const driverRef = firestore().collection('Bookings').doc(driverUID);
       const commuterRef = firestore().collection('Users').doc(userUID);
-      
-
-      
       
       await driverRef.update({
         bookerUID: firestore.FieldValue.arrayUnion(userUID),
         bookerProfile: firestore.FieldValue.arrayUnion(profile),
         bookingRequest: true,
       });
+    
       
       await commuterRef.update({
         bookingRequest: true,

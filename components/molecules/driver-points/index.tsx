@@ -86,7 +86,7 @@ const DriverWithdrawPoints = ({navigation, userID}: any) => {
       <ScrollView contentContainerStyle={{flexGrow: 1}}>
         <HomeHeader
           navigation={navigation}
-          title={'Widthdraw Points'}
+          title={'Withdraw Points'}
           fromProfile={false}
         />
 
@@ -138,7 +138,7 @@ const DriverWithdrawPoints = ({navigation, userID}: any) => {
               <ActivityIndicator color="white" />
             ) : (
               <Text style={{color: 'white', fontSize: 18, fontWeight: 'bold'}}>
-                Widthdraw Points
+                Withdraw Points
               </Text>
             )}
           </TouchableHighlight>

@@ -29,43 +29,12 @@ function CommuterMain({
   setBookingUID,
   setCommuterUID,
   setDisabledLogout,
+ 
 }: any) {
   useEffect(() => {
     setCommuterUID(userUID);
   }, [userUID]);
 
-  useEffect(() => {
-    const updateLocation = () => {
-      GetLocation.getCurrentPosition({
-        enableHighAccuracy: true,
-        timeout: 1000,
-      })
-        .then(location => {
-          setPosition({
-            latitude: location.latitude,
-            longitude: location.longitude * -1,
-            latitudeDelta: 0.005,
-            longitudeDelta: 0.005,
-          });
-        })
-        .catch(error => {
-          const {message} = error;
-        });
-    };
-
-    updateLocation();
-
-    const intervalId = setInterval(updateLocation, 1000); // Set your desired interval here (in milliseconds)
-
-    return () => clearInterval(intervalId);
-  }, []);
-
-  const [position, setPosition] = useState({
-    latitude: 0,
-    longitude: 0,
-    latitudeDelta: 0.005,
-    longitudeDelta: 0.005,
-  });
 
   const [driverData, setDriverData] = useState([]);
   const [routeData, setRouteData] = useState(null);
@@ -137,25 +106,62 @@ function CommuterMain({
 
   const handleCancel = async () => {
     try {
+      // Fetch the driver and commuter documents
       const driverRef = firestore().collection('Bookings').doc(driverUID);
       const commuterRef = firestore().collection('Users').doc(userUID);
-
+  
+      // Fetch the email of the current user from the Users collection
+      const currentUserDoc = await firestore().collection('Users').doc(userUID).get();
+      const currentUserEmail = currentUserDoc.data().email;
+  
+      // Update the driver's booking document
       await driverRef.update({
-        // bookerUID: '',
-        bookerProfile: {},
-        bookingRequest: false,
+        // Remove the userUID from bookerUID array
+        bookerUID: firestore.FieldValue.arrayRemove(userUID),
       });
+   
 
+    
+  
+      // Fetch the driver's booking document to get the bookerProfile array
+      const driverDoc = await driverRef.get();
+      const bookerProfile = driverDoc.data().bookerProfile || [];
+      const bookerUIDArray = driverDoc.data().bookerUID || [];
+
+         // If the bookerUID array is empty, set bookingRequest to false
+      if (bookerUIDArray.length === 0) {
+          await driverRef.update({
+              bookingRequest: false,
+          });
+      }
+  
+      // Find the index of the item with the same email in bookerProfile array
+      const indexToRemove = bookerProfile.findIndex(item => item.email === currentUserEmail);
+      if (indexToRemove !== -1) {
+        // Remove the item from bookerProfile array
+        bookerProfile.splice(indexToRemove, 1);
+  
+        // Update the driver's booking document with the modified bookerProfile array
+        await driverRef.update({
+          bookerProfile,
+        });
+      }
+  
+      // Update the commuter's document
       await commuterRef.update({
         bookingRequest: false,
       });
-
+  
+      // Display notification using notifee (assuming notifee is correctly initialized)
       await notifee.displayNotification({
         title: 'Driver Booking Request',
         body: 'You cancelled your request.',
       });
+  
+      // Set state or perform any other necessary actions
       setHasCancelled(true);
-
+  
+      // Update profile or navigate to another screen
       await updateProfile();
       navigation.navigate('BookingsDetail');
     } catch (error) {
@@ -386,11 +392,13 @@ function CommuterMain({
           borderTopRightRadius: 25,
         }}>
         <MainMapCommuter
-          position={position}
-          hasRide={hasRide}
+          userUID = {userUID}
+          hasRide= {hasRide}
           routeData={routeData}
         />
         <MainRideCommuter
+          userUID = {userUID}
+          driverUID = {driverUID}
           navigation={navigation}
           driverData={driverData}
           routeData={routeData}

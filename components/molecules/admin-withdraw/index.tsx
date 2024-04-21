@@ -53,7 +53,7 @@ function AdminWithdraw({navigation}: any) {
     action: string,
     docID: string,
     UID: string,
-    ammount: number | string,
+    amount: number | string,
   ) => {
     try {
       const userDoc = await firestore().collection('Users').doc(UID).get();
@@ -75,7 +75,7 @@ function AdminWithdraw({navigation}: any) {
         await firestore()
           .collection('Users')
           .doc(UID)
-          .update({points: (userDoc.data() as any).points - (ammount as any)});
+          .update({points: (userDoc.data() as any).points - (amount as any)});
       }
 
       setIsRefetch(prev => !prev);
@@ -85,6 +85,10 @@ function AdminWithdraw({navigation}: any) {
     } catch (error) {
       console.error('Error handling topup:', error);
     }
+  };
+  const [modalVisible, setModalVisible] = useState(false);
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
   };
 
   return (
@@ -123,7 +127,7 @@ function AdminWithdraw({navigation}: any) {
                 key={id}
                 docID={id}
                 UID={payload?.UID}
-                amount={payload?.ammount || 0}
+                amount={payload?.amount || 0}
                 accountName={payload?.accountName}
                 accountNumber={payload?.accountNumber}
                 platform={payload?.platorm}

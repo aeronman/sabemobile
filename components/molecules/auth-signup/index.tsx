@@ -3,9 +3,11 @@ import {
   Alert,
   Modal,
   ScrollView,
+  KeyboardAvoidingView,
   Text,
   TouchableOpacity,
   View,
+  Platform,
 } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 
@@ -50,6 +52,7 @@ function AuthSignUp({navigation}) {
   const [isLoading, setIsLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false); // State variable for modal visibility
   const [termsAccepted, setTermsAccepted] = useState(false); // State variable for terms acceptance
+  const [privacyModalVisible, setPrivacyModalVisible] = useState(false);
   const handleStep = () => {
     setStep(step + 1);
   };
@@ -76,6 +79,9 @@ function AuthSignUp({navigation}) {
   const [isValidPhone, setIsValidPhone] = useState(false);
   const [isValidPassword, setIsValidPassword] = useState(false);
 
+  const handlePrivacyPolicy = () => {
+  setPrivacyModalVisible(true);
+};
   const handleChangeUser = () => {
     setAsUser(prevState => !prevState);
     setName('');
@@ -108,6 +114,14 @@ function AuthSignUp({navigation}) {
     );
 
   const handleSignUpCommuter = async () => {
+    if (!termsAccepted) {
+      Alert.alert(
+        'Terms and Conditions',
+        'Please accept the Terms and Conditions to proceed with registration.',
+        [{ text: 'OK', onPress: () => setIsLoading(false) }]
+      );
+      return;
+    }
     setIsLoading(true);
 
     console.log(email);
@@ -131,6 +145,7 @@ function AuthSignUp({navigation}) {
 
       // Add user data to Firestore
       await firestore().collection('Users').doc(auth().currentUser?.uid).set({
+        bookingRequest:false,
         type: 'commuter',
         name: name,
         email: email,
@@ -141,6 +156,7 @@ function AuthSignUp({navigation}) {
         points: 0,
         schoolIDUrl: downloadURL,
         isVerified: false,
+      
       });
 
       console.log('User added!');
@@ -169,6 +185,14 @@ function AuthSignUp({navigation}) {
   };
 
   const handleSignUpDriver = async () => {
+    if (!termsAccepted) {
+      Alert.alert(
+        'Terms and Conditions',
+        'Please accept the Terms and Conditions to proceed with registration.',
+        [{ text: 'OK', onPress: () => setIsLoading(false) }]
+      );
+      return;
+    }
     setIsLoading(true);
 
     try {
@@ -233,6 +257,7 @@ function AuthSignUp({navigation}) {
   };
 
   return (
+    
     <StyledKeyboardView
       behavior="padding"
       style={{
@@ -247,6 +272,11 @@ function AuthSignUp({navigation}) {
           Sabe
         </StyledText30>
       </StyledCol>
+      <KeyboardAvoidingView
+  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+  style={{ flex: 1 }}
+>
+      <ScrollView>
       <StyledCol style={{width: '100%'}}>
         <StyledText14 style={[sans.regular, {color: '#042F40'}]}>
           Sign up as
@@ -325,15 +355,86 @@ function AuthSignUp({navigation}) {
           </StyledCol>
         )}
       </StyledCol>
+      </ScrollView>
+      </KeyboardAvoidingView>
+      
+      
+      <TouchableOpacity onPress={handlePrivacyPolicy}>
+        <StyledText14 style={[sans.regular, { color: '#042F40' }]}>
+          View Privacy Policy
+        </StyledText14>
+      </TouchableOpacity>
       {/* Accept Terms and Conditions */}
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        
         <CheckBox value={termsAccepted} onValueChange={setTermsAccepted} />
         <TouchableOpacity onPress={handleAcceptTerms}>
           <StyledText14 style={[sans.regular, {color: '#042F40'}]}>
             I accept the Terms and Conditions
           </StyledText14>
         </TouchableOpacity>
+        
       </View>
+      
+
+      {/* Privacy Policy Modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={privacyModalVisible}
+        onRequestClose={() => {
+          setPrivacyModalVisible(false);
+        }}
+      >
+        <ScrollView style={{ flex: 1, backgroundColor: '#ffffff' }}>
+          <StyledCol style={{ padding: 20 }}>
+            <StyledText16 style={[sans.bold, { color: '#042F40', marginBottom: 10 }]}>
+              Privacy Policy
+            </StyledText16>
+            {/* Replace with your privacy policy content wrapped in Text component */}
+            <Text>
+             We value your privacy and are committed to protecting your personal information.
+This Privacy Policy outlines how we collect, use, and safeguard your data when
+you use our mobile application, SABE.{'\n'}
+<Text style={{ fontWeight: 'bold' }}>Information We Collect:</Text>{'\n'}
+1. <Text style={{ fontWeight: 'bold' }}>Personal Information</Text>: We may collect your name, email address, phone number,
+when you register an account with SABE.{'\n'}
+2. <Text style={{ fontWeight: 'bold' }}>Location Information</Text>: SABE uses your device's location services to provide
+accurate ride-sharing services.{'\n'}
+3. <Text style={{ fontWeight: 'bold' }}>Usage Data</Text>: We collect information about how you interact with SABE to
+improve our services and user experience.{'\n'}
+4. <Text style={{ fontWeight: 'bold' }}>Communication Data</Text>: We may collect your messages, feedback, and customer
+support inquiries when you communicate with us through SABE.{'\n'}{'\n'}
+How We Use Your Information:{'\n'}
+- <Text style={{ fontWeight: 'bold' }}>To Provide Services</Text>: We use your information to facilitate ride-sharing services,
+process payments, and provide customer support.{'\n'}
+- <Text style={{ fontWeight: 'bold' }}>Personalization</Text>: We personalize your experience by recommending routes and
+offering promotions tailored to your preferences.{'\n'}
+- <Text style={{ fontWeight: 'bold' }}>Analytics</Text>: We analyze usage data to improve SABE's performance and optimize
+our services.{'\n'}
+- <Text style={{ fontWeight: 'bold' }}>Communications</Text>: We use your contact information to communicate with you
+about your account, service updates, and promotional offers.
+{'\n'}
+{'\n'}
+- <Text style={{ fontWeight: 'bold' }}>Data Security</Text>:{'\n'}
+We implement industry-standard security measures to protect your personal
+information from unauthorized access, disclosure, alteration, or destruction.
+{'\n'}
+By using SABE, you consent to the collection and use of your personal information
+as outlined in this Privacy Policy. If you have any questions or concerns, please
+contact us at <Text style={{ fontWeight: 'bold' }}> 0975-124-9734 </Text> or at our email <Text style={{ fontWeight: 'bold' }}> 2020101221@dhvsu.edu.ph </Text>
+This Privacy Policy is effective as of March 23,2024 and may be updated from time
+to time.
+            </Text>
+          </StyledCol>
+          
+          <TouchableOpacity onPress={() => setPrivacyModalVisible(false)}>
+            <StyledText16 style={[sans.bold, { color: '#042F40' }]}>
+              Back
+            </StyledText16>
+          </TouchableOpacity>
+        </ScrollView>
+      </Modal>
 
       {/* Modal for Terms and Conditions */}
       <Modal
@@ -347,20 +448,37 @@ function AuthSignUp({navigation}) {
           <StyledCol style={{padding: 20}}>
             <StyledText16
               style={[sans.bold, {color: '#042F40', marginBottom: 10}]}>
-              Terms and Conditions
+              General Terms and Conditions
             </StyledText16>
             <Text>
-              {' '}
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla
-              convallis libero eget diam interdum, sit amet dapibus magna
-              lobortis. In hac habitasse platea dictumst. Mauris ut nisl sem.
-              Integer id massa non lectus volutpat finibus. Sed consequat magna
-              eu enim venenatis, vitae fringilla odio lobortis. Nulla ultricies,
-              justo nec maximus fermentum, ipsum arcu tristique libero, non
-              efficitur odio purus in lorem. Fusce eleifend dui vel libero
-              consequat, id fringilla odio placerat. Integer non risus augue.
+             
+            
+Welcome to SABE! By using our mobile application, you agree to comply with the
+following terms and conditions:{'\n'}{'\n'}          
+By using SABE, you acknowledge and agree that we are not liable for any
+accidents, injuries, damages, or losses that may occur while using our app,
+including but not limited to riding activities.{'\n'} {'\n'}  
+You are responsible for your own safety while using SABE. Please adhere to all
+local laws and regulations regarding riding activities and safety precautions.{'\n'}
+{'\n'}
+You agree not to misuse SABE by engaging in any unlawful activities, violating the
+rights of others, or attempting to harm our platform or its users in any way.
+We are committed to protecting your privacy and personal information. Rest
+assured, your chats are not seen by the admin for your security purposes and are
+only between you and the driver. Please refer to our Privacy Policy for details on
+how we collect, use, and safeguard your data.{'\n'}{'\n'}  
+We reserve the right to update or modify these terms and conditions at any time
+without prior notice. By continuing to use SABE, you agree to be bound by the
+latest version of the user agreement.{'\n'}{'\n'}  
+If you have any questions or concerns regarding this user agreement or SABE in
+general, please contact us at <Text style={{ fontWeight: 'bold' }}> 0975-124-9734 </Text> or at this email
+<Text style={{ fontWeight: 'bold' }}> 2020101221@dhvsu.edu.ph </Text>{'\n'} {'\n'}  
+By using SABE, you acknowledge that you have read, understood, and agree to
+be bound by these terms and conditions. If you do not agree with any part of this
+agreement, please refrain from using our mobile application. Thank you.
             </Text>
           </StyledCol>
+          
           <TouchableOpacity onPress={() => setModalVisible(false)}>
             <StyledText16 style={[sans.bold, {color: '#042F40'}]}>
               Back
@@ -368,6 +486,7 @@ function AuthSignUp({navigation}) {
           </TouchableOpacity>
         </ScrollView>
       </Modal>
+      
       <StyledCol style={{width: '100%'}}>
         {asUser ? (
           <>

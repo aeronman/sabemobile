@@ -21,7 +21,12 @@ import storage from '@react-native-firebase/storage';
 
 import HomeHeader from "../../atoms/home-header";
 import { FormTextInput } from "../../../styles/input";
-import { StyledText16, styledText } from "../../../styles/text";
+import {
+  styledText,
+  StyledText14,
+  StyledText16,
+  StyledText30,
+} from '../../../styles/text';
 
 const CustomerBuyPoints = ({
   navigation,
@@ -100,6 +105,7 @@ const CustomerBuyPoints = ({
   };
 
   return (
+   
     <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <HomeHeader
@@ -114,6 +120,13 @@ const CustomerBuyPoints = ({
               resizeMode: "stretch", width: "100%", height: "100%",
             }} />
           </View>}
+          <StyledText16
+            style={[
+              {alignSelf: 'flex-start', textAlign: 'center', color: '#042F40'},
+            ]}>
+            Send to Gcash : 09751249734
+            Cyril Lauren G.
+          </StyledText16>
 
           <FormField label="Name" value={currentName} onChange={setCurrentName} />
           <FormField label="Reference" value={referenceNumber} onChange={setReferenceNumber} />

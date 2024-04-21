@@ -49,6 +49,7 @@ function UserProfile({
     setTimeout(() => {
       refetchProfile();
       setRefreshing(false);
+      
     }, 2000);
   }, []);
 
@@ -242,6 +243,7 @@ function UserProfile({
               </StyledRow>
             </StyledCol>
             <StyledCol style={{width: '100%', marginTop: 10}}>
+            
               {profile.type === 'driver' ? (
                 <ButtonSettings
                   setting={'Withdraw Points'}
@@ -261,6 +263,10 @@ function UserProfile({
               <ButtonSettings
                 setting={'About Us'}
                 onClick={handleAboutModalOpen}
+              />
+              <ButtonSettings
+                setting={'Refresh Profile'}
+                onClick={onRefresh}
               />
             </StyledCol>
           </StyledCol>

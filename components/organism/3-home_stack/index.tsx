@@ -164,6 +164,7 @@ function HomeStack({
               setBookingUID={setBookingUID}
               setCommuterUID={setCommuterUID}
               setDisabledLogout={setDisabledLogout}
+              refetchProfile={refetchProfile}
             />
           )
         }

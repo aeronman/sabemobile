@@ -13,6 +13,7 @@ import GetLocation from 'react-native-get-location';
 import firestore from '@react-native-firebase/firestore';
 
 import notifee from '@notifee/react-native';
+import MainMapDriver from '../../atoms/main-map-driver';
 
 // @ts-ignore
 function DriverMain({
@@ -30,39 +31,7 @@ function DriverMain({
     setBookingUID(userUID);
   }, [userUID]);
 
-  useEffect(() => {
-    const updateLocation = () => {
-      GetLocation.getCurrentPosition({
-        enableHighAccuracy: true,
-        timeout: 1000,
-      })
-        .then(location => {
-          setPosition({
-            latitude: location.latitude,
-            longitude: location.longitude * -1,
-            latitudeDelta: 0.005,
-            longitudeDelta: 0.005,
-          });
-        })
-        .catch(error => {
-          const {code, message} = error;
-          // console.warn(code, message);
-        });
-    };
-
-    updateLocation();
-
-    const intervalId = setInterval(updateLocation, 1000);
-
-    return () => clearInterval(intervalId);
-  }, []);
-
-  const [position, setPosition] = useState({
-    latitude: 0,
-    longitude: 0,
-    latitudeDelta: 0.005,
-    longitudeDelta: 0.005,
-  });
+ 
 
   const [requesteeData, setRequesteeData] = useState([]);
   const [dropeeData, setDropeeData] = useState([]);
@@ -246,11 +215,11 @@ function DriverMain({
           borderTopLeftRadius: 25,
           borderTopRightRadius: 25,
         }}>
-        {/* <MainMapDriver
-          position={position}
+        <MainMapDriver
+          userUID = {userUID}
           hasRide={hasRide}
           routeData={routeData}
-        /> */}
+        />
         <MainRideDriver
           navigation={navigation}
           routeData={routeData}

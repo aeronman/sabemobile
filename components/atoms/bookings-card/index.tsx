@@ -234,7 +234,7 @@ function BookingsCard({
           borderTopWidth: 1,
           borderColor: '#c7c7c7',
         }}>
-        <StyledTouchableRow style={{paddingTop: 2.5}} onPress={chatRider}>
+        {/* <StyledTouchableRow style={{paddingTop: 2.5}} onPress={chatRider}>
           <StyledText14
             style={[
               sans.bold,
@@ -243,7 +243,7 @@ function BookingsCard({
             MESSAGE
           </StyledText14>
           <ChatLogo width={20} height={20} />
-        </StyledTouchableRow>
+        </StyledTouchableRow> */}
         <StyledTouchableRow style={{paddingTop: 2.5}} onPress={pickRider}>
           <StyledText14 style={[sans.bold, {color: '#042F40', paddingTop: 2}]}>
             VIEW DETAILS

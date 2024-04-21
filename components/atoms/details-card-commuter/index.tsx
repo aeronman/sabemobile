@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Dimensions, Image} from 'react-native';
+import {Dimensions, Image, Modal, Text, TouchableOpacity, View} from 'react-native';
 
 import {styledText, StyledText14, StyledText16} from '../../../styles/text';
 import {
@@ -19,10 +19,9 @@ import Check from '../../../assets/icons/check.svg';
 function DetailsCardCommuter({id, data, onApprove}: any) {
   const sans = styledText();
 
-  const [showID, setShowID] = useState(false);
-
-  const handleShowID = () => {
-    setShowID(prevState => !prevState);
+  const [modalVisible, setModalVisible] = useState(false);
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
   };
 
   const handleApprove = () => {
@@ -31,37 +30,52 @@ function DetailsCardCommuter({id, data, onApprove}: any) {
 
   return (
     <>
-      {showID && (
-        <StyledTouchableCol
-          style={{
-            position: 'absolute',
-            justifyContent: 'flex-start',
-            width: '100%',
-            height: Dimensions.get('window').height,
-            zIndex: 2,
-          }}
-          onPress={handleShowID}>
-          <StyledCol
-            style={{
-              position: 'absolute',
-              justifyContent: 'flex-start',
-              width: '100%',
-              height: Dimensions.get('window').height,
-              backgroundColor: 'gray',
-              opacity: 0.5,
-            }}
-          />
-          <Image
-            source={{uri: data.schoolIDUrl}}
-            style={{
-              width: Dimensions.get('window').width * 0.85,
-              height: Dimensions.get('window').height * 0.6,
-              marginTop: 50,
-              borderRadius: 10,
-            }}
-          />
-        </StyledTouchableCol>
-      )}
+      {/* {showID && (
+        // <StyledTouchableCol
+        //   style={{
+        //     position: 'absolute',
+        //     justifyContent: 'flex-start',
+        //     width: '100%',
+        //     height: '100%',
+        //     zIndex: 2,
+        //   }}
+        //   onPress={handleShowID}>
+        //   <StyledCol
+        //     style={{
+        //       position: 'absolute',
+        //       justifyContent: 'flex-start',
+        //       width: '100%',
+        //       height: '100%',
+        //       backgroundColor: 'gray',
+        //       opacity: 0.5,
+        //     }}
+        //   />
+        //   <Image
+        //     source={{uri: data.schoolIDUrl}}
+        //     style={{
+        //       width: Dimensions.get('window').width * 0.85,
+        //       height: '100%',
+        //       marginTop: 50,
+        //       borderRadius: 10,
+        //     }}
+        //   />
+        // </StyledTouchableCol>
+      )} */}
+
+      {/* Modal for larger image */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={toggleModal}
+      >
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <TouchableOpacity onPress={toggleModal} style={{ position: 'absolute', top: 20, right: 20, zIndex: 10 }}>
+            <Text style={{ color: 'white', fontSize: 20 }}>Close</Text>
+          </TouchableOpacity>
+          <Image source={{ uri: data.schoolIDUrl }} style={{ width: '80%', height: '80%' }} />
+        </View>
+      </Modal>
 
       <StyledCol
         style={{
@@ -81,7 +95,7 @@ function DetailsCardCommuter({id, data, onApprove}: any) {
             justifyContent: 'space-between',
           }}>
           <SabeLogo width={25} height={25} />
-          <StyledTouchableRow onPress={handleShowID}>
+          <StyledTouchableRow onPress={toggleModal}>
             <StyledText14 style={[sans.bold, {color: '#042F40'}]}>
               View ID/s
             </StyledText14>

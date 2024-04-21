@@ -52,46 +52,53 @@ function MainRideDriver({
 
   const [profiles, setProfiles] = useState([]);
 
-  const handleReject = async (index:any) => {
+  const handleReject = async (index: any) => {
     try {
       const driverRef = firestore().collection('Bookings').doc(userUID);
       const driverSnapshot = await firestore()
         .collection('Bookings')
         .doc(userUID)
         .get();
-      const commuterRef = firestore()
-        .collection('Users')
-        .doc(driverSnapshot.data().bookerUID);
-
-        
-
-      const currentBookerProfile = driverSnapshot.data().bookerProfile;
+  
+      if (!driverSnapshot.exists) {
+        console.error('Document does not exist.');
+        return;
+      }
+  
+      const driverData = driverSnapshot.data();
+  
+      if (!driverData || !driverData.bookerUID || !driverData.bookerProfile) {
+        console.error('Missing required data in document.');
+        return;
+      }
+      
+      const commuterRef = firestore().collection('Users').doc(driverData.bookerUID[index]);
+      await commuterRef.update({
+        bookingRequest: false,
+      });
+  
+      const currentBookerProfile = driverData.bookerProfile;
       const updatedBookerProfile = [...currentBookerProfile];
-      updatedBookerProfile.splice(index, 1)
-
-      const currentBookerUID = driverSnapshot.data().bookerUID;
+      updatedBookerProfile.splice(index, 1);
+  
+      const currentBookerUID = driverData.bookerUID;
       const updatedBookerUID = [...currentBookerUID];
-      updatedBookerUID.splice(index,1)
-
-      if(currentBookerUID.length == 0){
+      updatedBookerUID.splice(index, 1);
+  
+      if (currentBookerUID.length == 0) {
         await driverRef.update({
           bookerUID: updatedBookerUID,
           bookerProfile: updatedBookerProfile,
           bookingRequest: false,
         });
-        }
-        else{
-          await driverRef.update({
-            bookerUID: updatedBookerUID,
-            bookerProfile: updatedBookerProfile,
-            
-          });
-
-        }
-      await commuterRef.update({
-        bookingRequest: false,
-      });
-
+      } else {
+        await driverRef.update({
+          bookerUID: updatedBookerUID,
+          bookerProfile: updatedBookerProfile,
+        });
+      }
+  
+  
       // setHasRequest(false);
       // setRequesteeData([]);
     } catch (error) {
@@ -157,6 +164,7 @@ function MainRideDriver({
         bookingRequest: false,
         bookingOngoing: true,
         route: currentRoute,
+        currentDriver : userUID,
       });
 
       // setHasRequest(false);
@@ -213,6 +221,7 @@ function MainRideDriver({
 
   const handleAcceptDrop = async () => {
     try {
+      handleSave();
       const driverRef = firestore().collection('Bookings').doc(userUID);
       const driverSnapshot = await firestore()
         .collection('Bookings')
@@ -255,7 +264,7 @@ function MainRideDriver({
         .bookingPassengers.filter(
           passenger => passenger !== driverSnapshot.data().dropoffUID,
         );
-
+      
       await driverRef.update({
         bookingDropoff: false,
         dropoffApproved: true,
@@ -271,6 +280,7 @@ function MainRideDriver({
       setHasDrop(false);
       setHasApproved(true);
       setRating(0);
+      setDropStep(1);
     } catch (error) {
       console.error('Error updating document:', error);
     }
@@ -286,7 +296,9 @@ function MainRideDriver({
       const currentPassengerCount = driverSnapshot.data().passengerCount || 0;
 
       if (currentPassengerCount === 0) {
+      
         setTimeout(async () => {
+
           handleDelete();
         }, 2000);
       }
@@ -411,7 +423,7 @@ function MainRideDriver({
         // @ts-ignore
         const currentPassengerCount = driverSnapshot.data().passengerCount || 0;
         const newPassengerCount = currentPassengerCount - totalPassengers;
-
+        handleSave();
         await driverRef.update({
           bookingPassengers: [],
           passengerCount: newPassengerCount,
@@ -419,13 +431,37 @@ function MainRideDriver({
           dropoffUID: '',
           dropoffApproved: false,
         });
-
+       
         setTimeout(async () => {
+        
           handleDelete();
         }, 2000);
       }
     } catch (error) {
       console.log('Error stopping ride: ', error);
+    }
+  };
+  const handleSave = async () => {
+    try {
+      console.log('Attempting to save booking data...');
+      // Get the current booking data
+      const bookingRef = firestore().collection('Bookings').doc(userUID);
+      const bookingSnapshot = await bookingRef.get();
+      const bookingData = bookingSnapshot.data();
+  
+      // Create a new collection called 'BookingHistory'
+      const bookingHistoryRef = firestore().collection('BookingHistory').doc();
+  
+      // Save the booking data along with the current booking document ID as 'driverid' in 'BookingHistory'
+      await bookingHistoryRef.set({
+        driverid: bookingRef.id, // Use the booking document ID instead of userUID
+        bookingData: bookingData,
+        timestamp: firestore.FieldValue.serverTimestamp(),
+      });
+  
+      console.log('Booking data saved to BookingHistory');
+    } catch (error) {
+      console.error('Error saving booking data to BookingHistory:', error);
     }
   };
 
@@ -464,6 +500,8 @@ function MainRideDriver({
       console.error('Error deleting document:', error);
     }
   };
+
+  
 
   return (
     <StyledCol
@@ -655,7 +693,7 @@ function MainRideDriver({
               <StyledText18
                 style={[sans.bold, {color: '#042F40', marginTop: 5}]}>
                 {hasListing
-                  ? 'Waiting for commuter request'
+                  ? "Waiting for commuter's request"
                   : 'You have no active listing'}
               </StyledText18>
               {hasListing && (
